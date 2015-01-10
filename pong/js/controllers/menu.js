@@ -22,7 +22,7 @@ function Menu(canvas) {
     this.continue_label = new Label(canvas, {
         font_size: 40,
         font_family: 'Colibri',
-        color: 'black',
+        color: 'grey',
         callback_action: this.continue_game.bind(this),
         text: 'Continue',
         position: {
@@ -41,17 +41,20 @@ Menu.prototype.tick = function () {
 };
 
 Menu.prototype.draw = function () {
-    this.context.fillStyle = "white";
-    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
 
 
     if (this.controllers.game.started) {
+        this.new_game_label.color = 'grey';
         this.new_game_label.position.y = this.canvas.width * (1 / 4) + 50;
         this.new_game_label.draw();
 
         this.continue_label.position.y = this.canvas.width * (3 / 4) - 50;
         this.continue_label.draw();
     } else {
+        this.context.fillStyle = "white";
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
         this.new_game_label.position.y = this.canvas.width / 2;
         this.new_game_label.draw();
     }

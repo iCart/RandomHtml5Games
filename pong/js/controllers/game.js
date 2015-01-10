@@ -4,7 +4,7 @@ function Game(canvas) {
     this.context = canvas.getContext("2d");
     this.started = false;
 
-    this.left_score = new Label(canvas, {
+    this.left_score_label = new Label(canvas, {
         font_size: 100,
         font_family: 'Colibri',
         color: 'white',
@@ -15,7 +15,7 @@ function Game(canvas) {
         }
     });
 
-    this.right_score = new Label(canvas, {
+    this.right_score_label = new Label(canvas, {
         font_size: 100,
         font_family: 'Colibri',
         color: 'white',
@@ -26,12 +26,17 @@ function Game(canvas) {
         }
     });
 
+    this.score_right = 0;
+    this.score_left = 0;
+
 }
 
 Game.prototype.start = function () {
     this.active = true;
-    this.ball = new Ball();
+    this.ball = new Ball(this.canvas);
     this.started = true;
+    this.score_right = 0;
+    this.score_left = 0;
 };
 
 Game.prototype.tick = function (event, ms_since_last_tick) {
@@ -54,8 +59,11 @@ Game.prototype.draw = function () {
     this.context.lineTo(this.canvas.width/2, this.canvas.height);
     this.context.stroke();
 
-    this.left_score.draw();
-    this.right_score.draw();
+    this.left_score_label.text = this.score_left;
+    this.left_score_label.draw();
+
+    this.right_score_label.text = this.score_right;
+    this.right_score_label.draw();
 
     this.ball.draw(this.context);
 };
@@ -71,20 +79,39 @@ Game.prototype.height = function () {
 Game.prototype.activate = function () {
     $(document).on('tick', this.tick.bind(this));
     $(document).on('keydown', this.keydown.bind(this));
+    $(this.ball).on('ball.touch_right', this.right_player_scored.bind(this));
+    $(this.ball).on('ball.touch_left', this.left_player_scored.bind(this));
+    $(this.ball).on('ball.touch_side', this.accelerate.bind(this));
 };
 
 Game.prototype.deactivate = function () {
-    console.log('game deactivating!!');
     $(document).off('tick');
     $(document).off('keydown');
+    $(this.ball).on('ball.touch_right');
+    $(this.ball).on('ball.touch_left');
+    $(this.ball).on('ball.touch_side');
 };
 
 Game.prototype.keydown = function (event) {
-    console.log('keydown');
     if (event.keyCode == ESCAPE){
         this.deactivate();
         this.controllers.menu.activate();
     }
+};
+
+Game.prototype.right_player_scored = function () {
+    this.score_left += 1;
+    this.ball.reset();
+};
+
+Game.prototype.left_player_scored = function () {
+    this.score_right += 1;
+    this.ball.reset();
+};
+
+Game.prototype.accelerate = function () {
+    // Accelerate faster as game drags on.
+    this.ball.speed += (this.score_left + this.score_right) * 10;
 };
 
 //Now, to figure out how inheritance works in JS..
