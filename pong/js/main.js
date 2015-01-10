@@ -12,7 +12,8 @@ $(function () {
 
     var controllers = {
         menu: new Menu(canvas),
-        game: new Game(canvas)
+        game: new Game(canvas),
+        options: new Options(canvas)
     };
     $.each(controllers, function(name, controller){
         controller.controllers = controllers;

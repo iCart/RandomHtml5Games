@@ -1,4 +1,7 @@
 var ESCAPE = 27;
+var UP = 38;
+var DOWN = 40;
+
 function Game(canvas) {
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
@@ -29,6 +32,11 @@ function Game(canvas) {
     this.score_right = 0;
     this.score_left = 0;
 
+    this.left_player = new Player(canvas, 0, false);
+    this.right_player = new Player(canvas, canvas.width - 20, {
+        up: UP,
+        down: DOWN
+    });
 }
 
 Game.prototype.start = function () {
@@ -45,18 +53,21 @@ Game.prototype.tick = function (event, ms_since_last_tick) {
 };
 
 Game.prototype.update = function (ms_since_last_tick) {
+    this.left_player.update(this.ball, ms_since_last_tick);
+    this.right_player.update(this.ball, ms_since_last_tick);
     this.ball.update(ms_since_last_tick, this);
 };
 
 Game.prototype.draw = function () {
+    //TODO: refactor
     this.context.fillStyle = 'black';
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.context.strokeStyle = 'white';
     this.context.lineWidth = 10;
     this.context.beginPath();
-    this.context.moveTo(this.canvas.width/2, 0);
-    this.context.lineTo(this.canvas.width/2, this.canvas.height);
+    this.context.moveTo(this.canvas.width / 2, 0);
+    this.context.lineTo(this.canvas.width / 2, this.canvas.height);
     this.context.stroke();
 
     this.left_score_label.text = this.score_left;
@@ -64,6 +75,9 @@ Game.prototype.draw = function () {
 
     this.right_score_label.text = this.score_right;
     this.right_score_label.draw();
+
+    this.left_player.draw();
+    this.right_player.draw();
 
     this.ball.draw(this.context);
 };
@@ -82,6 +96,9 @@ Game.prototype.activate = function () {
     $(this.ball).on('ball.touch_right', this.right_player_scored.bind(this));
     $(this.ball).on('ball.touch_left', this.left_player_scored.bind(this));
     $(this.ball).on('ball.touch_side', this.accelerate.bind(this));
+
+    this.left_player.activate();
+    this.right_player.activate();
 };
 
 Game.prototype.deactivate = function () {
@@ -90,10 +107,13 @@ Game.prototype.deactivate = function () {
     $(this.ball).on('ball.touch_right');
     $(this.ball).on('ball.touch_left');
     $(this.ball).on('ball.touch_side');
+
+    this.left_player.deactivate();
+    this.right_player.deactivate();
 };
 
 Game.prototype.keydown = function (event) {
-    if (event.keyCode == ESCAPE){
+    if (event.keyCode == ESCAPE) {
         this.deactivate();
         this.controllers.menu.activate();
     }
@@ -110,8 +130,9 @@ Game.prototype.left_player_scored = function () {
 };
 
 Game.prototype.accelerate = function () {
-    // Accelerate faster as game drags on.
+    // Accelerate faster as game drags on because why not?
     this.ball.speed += (this.score_left + this.score_right) * 10;
 };
+
 
 //Now, to figure out how inheritance works in JS..

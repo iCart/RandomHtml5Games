@@ -19,10 +19,26 @@ function Menu(canvas) {
     });
     this.elements.push(this.new_game_label);
 
+    this.options_label = new Label(canvas, {
+        font_size: 40,
+        font_family: 'Colibri',
+        color: 'black',
+        callback_action: this.show_options.bind(this),
+        text: 'Options',
+        position: {
+            x: canvas.width / 2,
+            y: 100
+        },
+        draw_bounding_box: false,
+        draw_background: false,
+        background_color: 'black'
+    });
+    this.elements.push(this.options_label);
+
     this.continue_label = new Label(canvas, {
         font_size: 40,
         font_family: 'Colibri',
-        color: 'grey',
+        color: 'darkgrey',
         callback_action: this.continue_game.bind(this),
         text: 'Continue',
         position: {
@@ -43,20 +59,32 @@ Menu.prototype.tick = function () {
 Menu.prototype.draw = function () {
 
 
-
     if (this.controllers.game.started) {
-        this.new_game_label.color = 'grey';
-        this.new_game_label.position.y = this.canvas.width * (1 / 4) + 50;
+        // Game has started
+        this.new_game_label.color = 'dark grey';
+        this.new_game_label.font_size = 40;
+        this.new_game_label.position.y = this.canvas.width * (1 / 6);
         this.new_game_label.draw();
 
-        this.continue_label.position.y = this.canvas.width * (3 / 4) - 50;
+        this.options_label.color = 'dark grey';
+        this.options_label.position.y = this.canvas.width * (1 / 2) - 50;
+        this.options_label.font_size = 40;
+        this.options_label.draw();
+
+        this.continue_label.position.y = this.canvas.width * (5 / 6) - 100;
         this.continue_label.draw();
     } else {
+        // Game not started
         this.context.fillStyle = "white";
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.new_game_label.position.y = this.canvas.width / 2;
+        this.new_game_label.position.y = this.canvas.width * (1 / 4) + 50;
+        this.new_game_label.font_size = 100;
         this.new_game_label.draw();
+
+        this.options_label.position.y = this.canvas.width * (3 / 4) - 50;
+        this.options_label.font_size = 100;
+        this.options_label.draw();
     }
 };
 
@@ -87,4 +115,9 @@ Menu.prototype.deactivate = function () {
 Menu.prototype.continue_game = function () {
     this.deactivate();
     this.controllers.game.activate();
+};
+
+Menu.prototype.show_options = function () {
+    this.deactivate();
+    this.controllers.options.activate();
 };
