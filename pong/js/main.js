@@ -1,10 +1,6 @@
 $(function () {
 
     var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
-
-    ctx.fillStyle = "rgb(0,0,0)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     var last_tick = new Date();
     setInterval(function(){
@@ -14,6 +10,12 @@ $(function () {
         $(document).trigger('tick', ms_since_last_tick);
     }, (1/60)*1000);
 
-    var game = new Game(canvas);
-    game.start();
+    var controllers = {
+        menu: new Menu(canvas),
+        game: new Game(canvas)
+    };
+    $.each(controllers, function(name, controller){
+        controller.controllers = controllers;
+    });
+    controllers.menu.activate();
 });

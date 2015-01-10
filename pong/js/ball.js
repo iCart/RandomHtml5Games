@@ -2,9 +2,9 @@ function Ball() {
     this.x = 0;
     this.y = 0;
 
-    // Speed is pixel/second
-    this.speed_x = 100;
-    this.speed_y = 100;
+    // Speed in pixel/second
+    this.speed_x = 50;
+    this.speed_y = 50;
 
     this.radius = 8;
 
@@ -12,7 +12,7 @@ function Ball() {
 }
 
 Ball.prototype.draw = function (context) {
-    context.fillStyle = 'rgb(255,255,255)';
+    context.fillStyle = 'grey';
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
     context.fill();

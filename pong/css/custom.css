@@ -1,7 +1,6 @@
 canvas{
     padding-left: 0;
     padding-right: 0;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 50px auto auto;
     display: block;
 }
