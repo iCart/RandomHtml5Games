@@ -20,7 +20,7 @@ function Label(canvas, options) {
     this.position = options['position'];
     this.draw_bounding_box = Boolean(options['draw_bounding_box']);
     this.draw_background = Boolean(options['draw_background']);
-    if (this.draw_background){
+    if (this.draw_background) {
         this.background_color = options['background_color'];
     }
 
@@ -71,7 +71,12 @@ Label.prototype.draw = function () {
 
 Label.prototype.clicked = function () {
     //No bounding box: this was never drawn, so don't bother checking
-    if (! this.bounding_box) {
+    if (!this.bounding_box) {
+        return;
+    }
+
+    //No click action, don't bother checking
+    if (!this.callback_action) {
         return;
     }
 
@@ -89,10 +94,10 @@ Label.prototype.clicked = function () {
     }
 };
 
-Label.prototype.activate = function() {
+Label.prototype.activate = function () {
     this.canvas.addEventListener("mousedown", this.listener);
 };
 
-Label.prototype.deactivate = function() {
+Label.prototype.deactivate = function () {
     this.canvas.removeEventListener("mousedown", this.listener);
 };
