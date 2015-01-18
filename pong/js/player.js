@@ -1,7 +1,7 @@
-function Player(canvas, x, controls) {
+function Player(canvas, x) {
     this.canvas = canvas;
-    this.ai_controlled = !Boolean(controls);
-    this.controls = controls;
+    // This is set at each tick by the Game controller
+    this.controls = null;
     this.context = canvas.getContext('2d');
     this.speed = 100;
     this.y = 0;
@@ -20,7 +20,7 @@ Player.prototype.draw = function () {
 };
 
 Player.prototype.update = function (ball, dt) {
-    if (this.ai_controlled) {
+    if (this.controls.controller == 'CPU') {
         this.ai_update(ball, dt);
     }
 
@@ -58,6 +58,8 @@ Player.prototype.ai_update = function (ball, dt) {
 };
 
 Player.prototype.activate = function () {
+    this.move_up = false;
+    this.move_down = false;
     $(document).on('keydown', this.keydown.bind(this));
     $(document).on('keyup', this.keyup.bind(this));
 };
@@ -68,17 +70,21 @@ Player.prototype.deactivate = function () {
 };
 
 Player.prototype.keydown = function (event) {
-    if (event.keyCode == this.controls.up) {
-        this.move_up = true;
-    } else if (event.keyCode == this.controls.down) {
-        this.move_down = true;
+    if (this.controls.controller != 'CPU') {
+        if (event.keyCode == this.controls.controls.up) {
+            this.move_up = true;
+        } else if (event.keyCode == this.controls.controls.down) {
+            this.move_down = true;
+        }
     }
 };
 
 Player.prototype.keyup = function (event) {
-    if (event.keyCode == this.controls.up) {
-        this.move_up = false;
-    } else if (event.keyCode == this.controls.down) {
-        this.move_down = false;
+    if (this.controls.controller != 'CPU') {
+        if (event.keyCode == this.controls.controls.up) {
+            this.move_up = false;
+        } else if (event.keyCode == this.controls.controls.down) {
+            this.move_down = false;
+        }
     }
 };

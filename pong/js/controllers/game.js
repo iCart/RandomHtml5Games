@@ -33,10 +33,7 @@ function Game(canvas) {
     this.score_left = 0;
 
     this.left_player = new Player(canvas, 0, false);
-    this.right_player = new Player(canvas, canvas.width - 20, {
-        up: UP,
-        down: DOWN
-    });
+    this.right_player = new Player(canvas, canvas.width - 20);
 }
 
 Game.prototype.start = function () {
@@ -53,6 +50,11 @@ Game.prototype.tick = function (event, ms_since_last_tick) {
 };
 
 Game.prototype.update = function (ms_since_last_tick) {
+
+    var options = this.controllers.options.options;
+    this.left_player.controls = options.player1;
+    this.right_player.controls = options.player2;
+
     this.left_player.update(this.ball, ms_since_last_tick);
     this.right_player.update(this.ball, ms_since_last_tick);
     this.ball.update(ms_since_last_tick, this);
@@ -132,6 +134,7 @@ Game.prototype.left_player_scored = function () {
 Game.prototype.accelerate = function () {
     // Accelerate faster as game drags on because why not?
     this.ball.speed += (this.score_left + this.score_right) * 10;
+    //TODO: this does not quite work as intended, figure it out later
 };
 
 
