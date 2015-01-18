@@ -55,6 +55,7 @@ Ball.prototype.check_player_collision_left = function (player) {
         && this.y < (player.y + player.length)
         && this.x <= (player.x + player.width + this.radius)
     ) {
+        $(this).trigger('ball.touch_paddle');
         this.direction.x *= -1;
     }
 };
@@ -64,6 +65,7 @@ Ball.prototype.check_player_collision_right = function (player) {
         && this.y < (player.y + player.length)
         && this.x >= (canvas.width - player.width - this.radius)
     ) {
+        $(this).trigger('ball.touch_paddle');
         this.direction.x *= -1;
     }
 };

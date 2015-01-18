@@ -98,6 +98,7 @@ Game.prototype.activate = function () {
     $(this.ball).on('ball.touch_right', this.right_player_scored.bind(this));
     $(this.ball).on('ball.touch_left', this.left_player_scored.bind(this));
     $(this.ball).on('ball.touch_side', this.accelerate.bind(this));
+    $(this.ball).on('ball.touch_paddle', this.accelerate.bind(this));
 
     this.left_player.activate();
     this.right_player.activate();
@@ -132,9 +133,7 @@ Game.prototype.left_player_scored = function () {
 };
 
 Game.prototype.accelerate = function () {
-    // Accelerate faster as game drags on because why not?
-    this.ball.speed += (this.score_left + this.score_right) * 10;
-    //TODO: this does not quite work as intended, figure it out later
+    this.ball.speed *= 1.1;
 };
 
 
